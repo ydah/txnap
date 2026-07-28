@@ -1,5 +1,7 @@
 # Txnap
 
+Catch transactions napping with locks held.
+
 `txnap` detects time spent away from the database while an
 Active Record transaction is materially open.
 
