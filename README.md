@@ -1,4 +1,4 @@
-# Txnap
+# Txnap [![Gem Version](https://badge.fury.io/rb/txnap.svg)](https://badge.fury.io/rb/txnap) [![CI](https://github.com/ydah/txnap/actions/workflows/main.yml/badge.svg)](https://github.com/ydah/txnap/actions/workflows/main.yml)
 
 Catch transactions napping with locks held.
 
