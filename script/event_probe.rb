@@ -6,7 +6,7 @@ active_record_version = ARGV.fetch(0) { ENV.fetch("ACTIVE_RECORD_VERSION") }
 adapter = ARGV.fetch(1) { ENV.fetch("ADAPTER", "sqlite3") }
 
 gem "activerecord", active_record_version
-gem adapter == "postgresql" ? "pg" : "sqlite3"
+gem (adapter == "postgresql") ? "pg" : "sqlite3"
 
 require "active_record"
 require "active_support/notifications"
