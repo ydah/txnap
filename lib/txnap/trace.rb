@@ -98,7 +98,7 @@ module Txnap
     end
 
     def longest_gap_duration
-      @gaps.first&.duration || -Float::INFINITY
+      @gaps.first&.duration || 0.0
     end
 
     def add_lock_candidate(candidate)
