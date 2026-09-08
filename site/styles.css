@@ -1,0 +1,46 @@
+@import "tailwindcss" source("./public");
+
+@layer base {
+  body {
+    font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+    @apply bg-white text-slate-950 antialiased;
+  }
+
+  h1, h2, h3 {
+    @apply text-balance;
+  }
+
+  p {
+    @apply text-pretty;
+  }
+
+  code, pre {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  }
+
+  a:focus-visible {
+    @apply outline-2 outline-offset-4 outline-blue-700;
+  }
+
+  section[id] {
+    @apply scroll-mt-8;
+  }
+}
+
+@layer components {
+  .page-width {
+    @apply mx-auto max-w-7xl px-6 sm:px-10 lg:px-16;
+  }
+
+  .button {
+    @apply inline-flex min-h-12 items-center justify-center rounded-lg px-5 py-3 text-sm font-semibold;
+  }
+
+  .text-link {
+    @apply underline decoration-slate-300 underline-offset-4 hover:decoration-blue-700 hover:text-blue-700;
+  }
+
+  .code-block {
+    @apply overflow-x-auto rounded-xl bg-slate-900 p-5 text-sm leading-7 text-slate-100;
+  }
+}

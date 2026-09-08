@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Txnap finds the non-database gaps inside Active Record transactions. See where time goes while locks may still be held, with SQL and application call sites.">
+    <meta property="og:title" content="Txnap — Catch transactions napping with locks held">
+    <meta property="og:description" content="Fast queries can hide a slow transaction. Find the time spent away from the database with this small Ruby gem.">
+    <meta property="og:type" content="website">
+    <title>Txnap — Catch transactions napping with locks held</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:z-10 focus:m-4 focus:rounded-lg focus:bg-white focus:p-4">Skip to content</a>
+
+    <header class="page-width flex min-h-24 flex-wrap items-center justify-between gap-4 py-5">
+      <a class="inline-flex items-center gap-3 text-2xl font-bold" href="./" aria-label="Txnap home">
+        <svg class="size-9 text-blue-700" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <rect width="40" height="40" rx="10" fill="currentColor"/>
+          <path d="M10 11v18m20-18v18M10 20h6m8 0h6" stroke="white" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        txnap
+      </a>
+      <nav class="flex items-center gap-5 text-sm font-medium sm:gap-8" aria-label="Main navigation">
+        <a class="hidden hover:text-blue-700 sm:inline" href="#how-it-works">How it works</a>
+        <a class="hover:text-blue-700" href="#get-started">Get started</a>
+        <a class="inline-flex min-h-11 items-center gap-2 hover:text-blue-700" href="https://github.com/ydah/txnap">
+          GitHub
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M14 4h6v6m0-6L10 14M10 4H4v16h16v-6"/></svg>
+        </a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="page-width grid items-center gap-12 pb-16 pt-12 sm:pt-16 lg:grid-cols-2 lg:gap-10 lg:pb-24 lg:pt-20" aria-labelledby="hero-title">
+        <div>
+          <h1 id="hero-title" class="max-w-xl text-5xl font-semibold leading-tight sm:text-6xl lg:text-7xl">Fast queries.<br>Slow transaction?</h1>
+          <p class="mt-7 max-w-md text-lg leading-8 text-slate-600">Your database did its job. What happened in between?</p>
+          <p class="mt-4 max-w-md text-base leading-7 text-slate-600">Txnap finds time spent away from the database while an Active Record transaction is open and locks may still be held.</p>
+          <div class="mt-8 flex flex-wrap items-center gap-3">
+            <a class="button bg-blue-700 text-white hover:bg-blue-800" href="#get-started">Add Txnap to your app</a>
+            <a class="button text-slate-700 hover:bg-slate-100" href="https://github.com/ydah/txnap#readme">Read the docs</a>
+          </div>
+          <p class="mt-5 text-sm text-slate-500">A Ruby gem. No separate service to run.</p>
+        </div>
+
+        <figure class="min-w-0 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-8">
+          <figcaption class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-5 text-sm">
+            <span class="font-semibold">One transaction, under the lens</span>
+            <span class="text-slate-500">Illustrative trace</span>
+          </figcaption>
+          <div class="mt-7 flex items-center justify-between text-xs text-slate-500">
+            <span>Database event</span><span>Elapsed time</span>
+          </div>
+          <ol class="mt-4 space-y-4 text-sm">
+            <li class="flex items-center gap-3"><span class="size-2 rounded-full border-2 border-slate-400" aria-hidden="true"></span><code class="text-slate-500">BEGIN</code><span class="ml-auto tabular-nums text-slate-500">0 ms</span></li>
+            <li class="flex items-center gap-3"><span class="size-2 rounded-full bg-slate-700" aria-hidden="true"></span><code>UPDATE users</code><span class="ml-auto tabular-nums text-slate-500">112 ms</span></li>
+            <li class="ml-1 border-l-2 border-blue-700 py-2 pl-5">
+              <div class="rounded-xl bg-blue-100 p-5 text-blue-900">
+                <div class="flex items-baseline gap-2"><span class="text-5xl font-semibold tabular-nums sm:text-6xl">742</span><span class="text-xl">ms</span></div>
+                <p class="mt-2 font-semibold">No database work.</p>
+                <p class="mt-1 text-sm leading-6">A row lock may still be held.</p>
+              </div>
+            </li>
+            <li class="flex items-center gap-3"><span class="size-2 rounded-full bg-slate-700" aria-hidden="true"></span><code>INSERT audit_logs</code><span class="ml-auto tabular-nums text-slate-500">854 ms</span></li>
+            <li class="flex items-center gap-3"><span class="size-2 rounded-full border-2 border-slate-400" aria-hidden="true"></span><code class="text-slate-500">COMMIT</code><span class="ml-auto tabular-nums text-slate-500">1,024 ms</span></li>
+          </ol>
+          <dl class="mt-7 grid grid-cols-2 gap-4 border-t border-slate-200 pt-5 text-sm">
+            <div><dt class="text-slate-500">Total transaction</dt><dd class="mt-1 text-lg font-semibold tabular-nums">1,024 ms</dd></div>
+            <div><dt class="text-slate-500">Database time</dt><dd class="mt-1 text-lg font-semibold tabular-nums">31 ms</dd></div>
+          </dl>
+        </figure>
+      </section>
+
+      <div class="page-width">
+        <ul class="flex flex-wrap items-center justify-between gap-x-8 gap-y-4 border-y border-slate-200 py-6 text-sm text-slate-600" aria-label="Compatibility and license">
+          <li>Built for <strong class="font-semibold text-slate-950">Active Record 7.2 &amp; 8.0</strong></li>
+          <li><strong class="font-semibold text-slate-950">Ruby 3.2+</strong></li>
+          <li>Open source under the <a class="text-link font-semibold text-slate-950" href="https://github.com/ydah/txnap/blob/main/LICENSE.txt">MIT license</a></li>
+        </ul>
+      </div>
+
+      <section id="how-it-works" class="page-width py-20 sm:py-28" aria-labelledby="gap-title">
+        <div class="grid gap-6 lg:grid-cols-2 lg:gap-16">
+          <h2 id="gap-title" class="max-w-md text-3xl font-semibold leading-tight sm:text-4xl">The query isn’t always<br>the slow part.</h2>
+          <p class="max-w-xl text-base leading-8 text-slate-600">An external request. A file read. A little too much Ruby. Work between queries can keep a transaction open long after the database is done. Slow-query tools don’t expose that gap. Txnap does.</p>
+        </div>
+        <div class="mt-12 grid gap-8 sm:grid-cols-3 sm:gap-10">
+          <article class="border-t-2 border-slate-200 pt-5">
+            <h3 class="text-lg font-semibold">Watch the real transaction</h3>
+            <p class="mt-3 text-sm leading-7 text-slate-600">Measurement starts when the actual <code>BEGIN</code> finishes and ends when <code>COMMIT</code> or <code>ROLLBACK</code> starts. Work before a lazy transaction opens is excluded.</p>
+          </article>
+          <article class="border-t-2 border-blue-700 pt-5">
+            <h3 class="text-lg font-semibold">Find the longest gap</h3>
+            <p class="mt-3 text-sm leading-7 text-slate-600">See the interval between database events, the SQL on either side, and the application call sites. The default reporting threshold is <span class="tabular-nums">100 ms</span>.</p>
+          </article>
+          <article class="border-t-2 border-slate-200 pt-5">
+            <h3 class="text-lg font-semibold">Bring the context with it</h3>
+            <p class="mt-3 text-sm leading-7 text-slate-600">Get likely lock candidates in your logs, raise in tests, or send the <code>idle_gap.txnap</code> notification to your existing APM.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="bg-slate-50 py-16 sm:py-24" aria-labelledby="report-title">
+        <div class="page-width grid items-center gap-10 lg:grid-cols-5 lg:gap-16">
+          <div class="lg:col-span-2">
+            <h2 id="report-title" class="text-3xl font-semibold leading-tight sm:text-4xl">Less guessing.<br>A place to look.</h2>
+            <p class="mt-6 text-base leading-8 text-slate-600">The report points to the queries around the gap and the code that issued them. Start there, then move slow non-database work outside the transaction.</p>
+            <p class="mt-5 text-sm leading-7 text-slate-500">Lock detection is heuristic: a candidate isn’t proof that a lock is still held. Txnap observes transactions; it never changes their behavior.</p>
+            <a class="text-link mt-6 inline-block py-2 text-sm font-semibold" href="https://github.com/ydah/txnap#what-is-and-is-not-measured">See what is measured</a>
+          </div>
+          <figure class="min-w-0 overflow-hidden rounded-xl bg-slate-900 lg:col-span-3">
+            <figcaption class="flex items-center gap-2 border-b border-slate-700 px-6 py-4 text-xs text-slate-300"><span class="size-2 rounded-full bg-blue-400" aria-hidden="true"></span>Example log output</figcaption>
+            <pre class="overflow-x-auto p-6 text-xs leading-7 text-slate-200 sm:text-sm" tabindex="0" aria-label="Example Txnap idle gap report"><code><span class="text-white">Txnap::IdleGapDetected</span>
+
+Transaction held for 1,024 ms (BEGIN → COMMIT)
+Database time: 31 ms
+<span class="text-blue-300">Longest non-database gap: 742 ms</span>
+
+Gap occurred between:
+  after:  UPDATE "users" SET ...
+          (app/services/checkout.rb:88)
+  before: INSERT INTO "audit_logs" ...
+          (app/services/checkout.rb:131)
+
+Locks possibly held during the gap:
+  UPDATE users (row lock)
+  app/services/checkout.rb:88</code></pre>
+          </figure>
+        </div>
+      </section>
+
+      <section id="get-started" class="page-width grid gap-10 py-20 sm:py-28 lg:grid-cols-5 lg:gap-16" aria-labelledby="start-title">
+        <div class="lg:col-span-2">
+          <h2 id="start-title" class="text-3xl font-semibold leading-tight sm:text-4xl">Catch your first nap.</h2>
+          <p class="mt-6 max-w-sm text-base leading-8 text-slate-600">Add the gem, set a threshold, and let your application run. Rails installs the notification subscribers automatically.</p>
+          <a class="text-link mt-6 inline-block py-2 text-sm font-semibold" href="https://github.com/ydah/txnap#configuration">Explore all configuration options</a>
+        </div>
+        <ol class="min-w-0 space-y-9 lg:col-span-3">
+          <li>
+            <h3 class="flex items-center gap-3 text-base font-semibold"><span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm tabular-nums">1</span>Add to your Gemfile</h3>
+            <p class="mb-3 mt-3 text-sm leading-6 text-slate-600">Until the first release, install directly from GitHub.</p>
+            <pre class="code-block" tabindex="0" aria-label="Gemfile installation"><code>gem "txnap", github: "ydah/txnap"</code></pre>
+          </li>
+          <li>
+            <h3 class="mb-4 flex items-center gap-3 text-base font-semibold"><span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm tabular-nums">2</span>Install the gem</h3>
+            <pre class="code-block" tabindex="0" aria-label="Terminal installation command"><code>bundle install</code></pre>
+          </li>
+          <li>
+            <h3 class="mb-4 flex items-center gap-3 text-base font-semibold"><span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm tabular-nums">3</span>Configure your initializer</h3>
+            <pre class="code-block" tabindex="0" aria-label="Txnap Rails initializer"><code><span class="text-slate-400"># config/initializers/txnap.rb</span>
+Txnap.configure do |config|
+  config.mode = :log
+  config.gap_threshold = 0.1 <span class="text-slate-400"># seconds</span>
+end</code></pre>
+            <p class="mt-3 text-sm leading-7 text-slate-600">Using Active Record without Rails? Call <code>Txnap.install!</code> after configuration.</p>
+          </li>
+        </ol>
+      </section>
+
+      <aside class="page-width pb-20" aria-labelledby="test-note-title">
+        <div class="grid gap-5 rounded-2xl bg-blue-50 p-6 sm:p-9 lg:grid-cols-3 lg:gap-10">
+          <h2 id="test-note-title" class="text-xl font-semibold text-blue-950">Make the gap visible<br>in your test suite, too.</h2>
+          <div class="lg:col-span-2">
+            <p class="text-sm leading-7 text-blue-950">Set <code>config.mode = :raise</code> to surface a detected gap as an exception in tests. The exception is raised after the transaction finishes; a successful commit has already happened and cannot be rolled back by it.</p>
+            <a class="mt-3 inline-block py-2 text-sm font-semibold text-blue-800 underline decoration-blue-300 underline-offset-4 hover:decoration-blue-800" href="https://github.com/ydah/txnap#suppression-and-filtering">Learn about suppression and filtering</a>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="page-width">
+      <div class="flex flex-wrap items-center justify-between gap-6 border-t border-slate-200 py-8 text-sm">
+        <p class="text-slate-500"><span class="mr-3 font-bold text-slate-950">txnap</span> Catch transactions napping with locks held.</p>
+        <div class="flex items-center gap-6">
+          <a class="text-link text-slate-600" href="https://github.com/ydah/txnap">Source code</a>
+          <a class="text-link text-slate-600" href="https://github.com/ydah">Yudai Takada</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

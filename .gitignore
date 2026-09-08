@@ -13,3 +13,5 @@ gemfiles/*.lock
 .rspec_status
 *.swp
 *.gem
+/site/node_modules/
+/site/public/styles.css

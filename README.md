@@ -228,6 +228,26 @@ Use `TIME_SCALE=1.5` to relax timing windows on slower CI workers. Event payload
 spike results and reproduction commands are in
 [`spec/fixtures/event_payloads.md`](spec/fixtures/event_payloads.md).
 
+## Landing page
+
+The GitHub Pages site lives in `site/public`. Build its Tailwind CSS and
+preview it locally:
+
+```bash
+cd site
+npm ci
+npm run build
+python3 -m http.server 8080 --directory public
+```
+
+Open `http://localhost:8080`. Re-run `npm run build` after changing HTML or
+`site/styles.css`.
+
+To publish, select **GitHub Actions** under the repository's **Settings →
+Pages → Build and deployment → Source**, then push the site to `main` or run
+the **GitHub Pages** workflow manually. Pull requests build without deploying.
+The site will be available at `https://ydah.github.io/txnap/`.
+
 ## License
 
 The gem is available under the [MIT License](LICENSE.txt).
